@@ -1,34 +1,29 @@
-[project]
+[tool.poetry]
 name = "sequentialhypothesistestingmodel"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "=",email = "mierowir@rose-hulman.edu"}
-]
-license = {text = "MIT"}
+description = "an implementation of a computational model"
+authors = ["Isaac Mierow <mierowir@rose-hulman.edu>"]
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    "mkdocs-redirects (>=1.2.3,<2.0.0)",
-    "mkdocs-minify-plugin (>=0.8.0,<0.9.0)",
-    "mkdocs-git-revision-date-localized-plugin (>=1.5.1,<2.0.0)",
-    "mkdocs-awesome-nav (>=3.3.0,<4.0.0)",
-    "mkdocs-macros-plugin (>=1.5.0,<2.0.0)",
-    "mkdocs-material (>=9.7.6,<10.0.0)",
-    "pytest (>=9.0.3,<10.0.0)",
-    "matplotlib (>=3.10.9,<4.0.0)",
-    "numpy (<2.4)",
-    "pandas (<3.0)"
-]
+package-mode = false
+# packages = [{include = "sequentialhypothesistestingmodel"}]
 
+[tool.poetry.dependencies]
+python = "^3.12"
+mkdocs-redirects = "^1.2.3"
+mkdocs-minify-plugin = "^0.8.0"
+mkdocs-git-revision-date-localized-plugin = "^1.5.1"
+mkdocs-awesome-nav = "^3.3.0"
+mkdocs-macros-plugin = "^1.5.0"
+mkdocs-material = "^9.7.6"
+pytest = "^9.0.3"
+matplotlib = "^3.10.9"
+numpy = "^2.4.4"
+pandas = "^3.0.3"
+
+[tool.poetry.group.dev.dependencies]
+# ipykernel = "^7.2.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-package-mode = false
-[dependency-groups]
-dev = [
-    "ipykernel (>=7.2.0,<8.0.0)"
-]
