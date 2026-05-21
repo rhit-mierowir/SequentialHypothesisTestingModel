@@ -19,6 +19,7 @@ nav:
   - Overview: index.md
   - Setup: repo_setup.md
   - implementation
+  - Experiment
 
 
 # If false, the above tree is all that is shown at this level of the directory structure.
