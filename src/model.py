@@ -1,7 +1,9 @@
+# Thiswas not able to work well with the jupyter notebook, so I transitioned to using the run_model.ipynb notebook to run the experiments.
+
 from enum import IntEnum, auto
 from dataclasses import dataclass
 import functools as ft
-from typing import Protocol, Generator, Any, Iterator, Callable
+from typing import Protocol, Generator, Any, Iterator, Callable, Union
 from random import Random
 
 
@@ -127,11 +129,32 @@ class HistoricallyInformedHypothesisOffset_StimulusSelector:
         upper = min(upper, current_hypothesis.category_boundary + self.sampling_bias)
         return self.rand.uniform(lower, upper)
 
+#############################################################[ Archive Content ]#############################################################
+
+@dataclass(frozen=True, slots=False)
+class New_Datapoint_Archive:
+    datapoint:Datapoint
+@dataclass(frozen=True, slots=False)
+class New_Hypothesis_Archive:
+    hypothesis:Hypothesis
+
+type Archive= Union[New_Datapoint_Archive, New_Hypothesis_Archive]
+
 ###################################################[ Hypothesis Bank ]################################################################
     
 class HypothesisBank(Protocol):
     "These classes are what is used to determine when a hypothesis should be updated and how."
-    pass
+    def learn_data(self,data:Datapoint) -> None:
+        ...
+    def predict_categorization(self, stimulus: float) -> safe_category:
+        ...
+    def suggest_stimulus(self) -> float:
+        ...
+    def get_hypothesis_archive(self)->list[Archive]:
+        ...
+    def get_hypothesis_archive_as_string(self)->str:
+        ...
+    
 
 # @dataclass
 # class MultiHypothesisBankConfig:
@@ -153,22 +176,41 @@ class ReplaceWhenWrong_HypothesisBank(HypothesisBank):
         self.history = history
         self.updater = updater
         self.selector = selector
+        self.archive:list[Archive] = []
 
         self.active_hypothesis:Hypothesis = next(self.updater) # Need this to start the iterator.
         if initial_hypothesis is not None: self.active_hypothesis = initial_hypothesis
 
+        self.archive.append(New_Hypothesis_Archive(self.active_hypothesis))
+
     def learn_data(self,data:Datapoint) -> None:
         "This method represents the model getting data from the environment. If this conflicts with the current model, it will replace it."
         self.history.add(data)
+        self.archive.append(New_Datapoint_Archive(data))
 
         # Update the active hypothesis if it is inconsistant with the data.
         if self.active_hypothesis.eval(stimulus=data.position) != data.category:
             self.active_hypothesis = next(self.updater)
+            self.archive.append(New_Hypothesis_Archive(self.active_hypothesis))
 
     def predict_categorization(self, stimulus: float) -> safe_category:
         "Given the currently accepted hypothesis, how would we expect the current stimulus be categorized."
         return self.active_hypothesis.eval(stimulus=stimulus)
     
-    def select_next_stimulus(self) -> float:
+    def suggest_stimulus(self) -> float:
         "Given the current history, what stimulus would be the best"
         return self.selector.select_stimulus(self.active_hypothesis)
+    
+    def get_hypothesis_archive(self)->list[Archive]:
+        return self.archive
+    
+    def get_hypothesis_archive_as_string(self)->str:
+        out = []
+        for e in self.get_hypothesis_archive():
+            if   isinstance(e, New_Datapoint_Archive):
+                out.append(f"DATA: learned {e.datapoint.position} in Category '{e.datapoint.category.name}'")
+            elif isinstance(e, New_Hypothesis_Archive):
+                out.append(f"HYPOTHESIS: new boundary at {e.hypothesis.category_boundary}")
+            else:
+                out.append(f"???: Archive note not recognized. `{e}`")
+        return "\n".join(out)
