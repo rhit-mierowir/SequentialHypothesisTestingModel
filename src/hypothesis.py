@@ -93,5 +93,7 @@ class Multi_HypothesisBank(HypothesisBank):
 
 class ReplaceWhenWrong_HypothesisBank(HypothesisBank):
     def __init__(self,history:HistoryManager,updater:HypothesisUpdater) -> None:
-        self.active_hypothesis:Hypothesis
-        
+        self.history = history
+        self.updater = updater
+
+        self.active_hypothesis:Hypothesis = next(self.updater)
