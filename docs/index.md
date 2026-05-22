@@ -7,6 +7,9 @@ This repository builds a model based off of the model Markant and Gureckis used 
 
 In this repository is the final project for a Computational Psychology Class, where we will try to implement this model and perform a simple experiment to compare our model predictions to experimental data. 
 
+[Run The Experiment](./Experiment/index.md){.md-button .md-button--primary}
+
+
 !!! todo
     Implement & Document Model.
 
