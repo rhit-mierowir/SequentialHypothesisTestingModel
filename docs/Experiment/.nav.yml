@@ -17,6 +17,8 @@ sort:
 
 nav: 
   - Overview: index.md
+  - selection_code.md
+  - yoked_code.md
 
 
 # If false, the above tree is all that is shown at this level of the directory structure.
