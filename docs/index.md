@@ -13,5 +13,3 @@ In this repository is the final project for a Computational Psychology Class, wh
 !!! todo
     Create a Jupiter Notebook to demonstrate the model
 
-!!! todo
-    Create Experiment
