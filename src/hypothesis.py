@@ -36,16 +36,17 @@ class Datapoint:
 
 class HistoryManager:
     "This manages the history of observations seen, and implements any memory restrictions assumend in the model."
-    def __init__(self, max_memory_length:int) -> None:
+
+    def __init__(self, max_memory_length:int|None) -> None:
         self.contents:list[Datapoint] = []
-        self.max_memory_length:int = max_memory_length
+        self.max_memory_length:int|None = max_memory_length
     
     def __iter__(self)->Iterator[Datapoint]:
         return self.contents.__iter__()
     
     def add(self,data:Datapoint)-> None:
         self.contents.append(data)
-        while self.max_memory_length > len(self.contents):
+        while self.max_memory_length is not None and self.max_memory_length > len(self.contents):
             self.contents.pop(0)
 
 type HypothesisUpdater = Generator[Hypothesis,Any,None]
@@ -85,12 +86,12 @@ class MultiHypothesisBankConfig:
     This number should be < num_hypotheses or no hypotheses will be updated between trials. 
     """
 
-class MultiHypothesisBank(HypothesisBank):
+class Multi_HypothesisBank(HypothesisBank):
     def __init__(self, config:MultiHypothesisBankConfig) -> None:
         self.active_hypotheses:list[Hypothesis] = []
         self.config = config
 
-class ReplaceWhenWrongHypothesisBank(HypothesisBank):
-    def __init__(self) -> None:
+class ReplaceWhenWrong_HypothesisBank(HypothesisBank):
+    def __init__(self,history:HistoryManager,updater:HypothesisUpdater) -> None:
         self.active_hypothesis:Hypothesis
         
